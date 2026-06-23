@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderLust Tours</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            scroll-behavior: smooth;
+        }
+        .page-section {
+            display: none;
+            min-height: calc(100vh - 160px);
+            padding: 40px 0;
+            animation: fadeIn 0.5s;
+        }
+        .page-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Shiny Attractive Page Backgrounds */
+        .bg-trip-type { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); color: #fff; }
+        .bg-destination { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); color: #212529; }
+        .bg-package { background: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); color: #212529; }
+        .bg-booking { background: linear-gradient(to top, #e6b980 0%, #eacda3 100%); color: #212529; }
+        .bg-success-page { background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); color: #212529; }
+        .bg-train { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); color: #212529; }
+        .bg-flight { background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); color: #fff; }
+        .bg-hotel { background: linear-gradient(to top, #fddb92 0%, #d1fdff 100%); color: #212529; }
+        .bg-payment { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+
+        /* API Glowing Dot */
+        .live-dot {
+            height: 10px;
+            width: 10px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 10px #2ecc71;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+        
+        /* AI Chatbot */
+        #ai-chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        #ai-chat-btn { background-color: #6c5ce7; color: white; border: none; border-radius: 50px; padding: 12px 25px; font-size: 1.1rem; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s; }
+        #ai-chat-btn:hover { background-color: #5f27cd; transform: scale(1.05); }
+        #ai-chat-box { width: 320px; background: white; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
+        .chat-msg { font-size: 0.9rem; line-height: 1.4; }
+        .user-msg { background-color: #e3f2fd; color: #0d47a1; margin-left: auto; text-align: right; }
+        .ai-msg { background-color: #f1f2f6; border-left: 3px solid #6c5ce7; color: #2f3640; }
+        
+        /* Flight Seat Map */
+        .flight-seat {
+            width: 35px; height: 40px; margin: 0 4px; border-radius: 8px 8px 3px 3px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.75rem; font-weight: bold; color: white; transition: 0.2s;
+        }
+        .business-seat { width: 45px; height: 50px; background-color: #a29bfe; border-bottom: 5px solid #6c5ce7; }
+        .economy-seat { background-color: #81ecec; border-bottom: 5px solid #00cec9; color: #2d3436; }
+        .flight-seat.booked { background-color: #ff7675; border-bottom: 5px solid #d63031; cursor: not-allowed; opacity: 0.5; color: white; }
+        .flight-seat.selected { background-color: #ffeaa7; border-bottom: 5px solid #fdcb6e; color: #2d3436; }
+        .seat-aisle-right { margin-right: 35px; }
+        /* Navbar */
+        .navbar {
+            background-color: #0b0b0b;
+            padding: 15px 0;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: #ff6b6b !important;
+            font-size: 1.8rem;
+        }
+        .nav-link {
+            color: #ffffff !important;
+            font-weight: 600;
+            margin: 0 10px;
+        }
+        .nav-link:hover {
+            color: #ff6b6b !important;
+        }
+        .btn-wishlist {
+            background-color: #ff8787;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 25px;
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(255, 135, 135, 0.5);
+            border: none;
+        }
+        .btn-wishlist:hover { background-color: #fa5252; color: white; }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        .hero h1 { font-size: 4.5rem; font-weight: 700; margin-bottom: 20px; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
+        .hero p { font-size: 1.2rem; margin-bottom: 30px; font-weight: 400; }
+        .btn-custom {
+            background-color: #48c7b4;
+            color: white;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: none;
+            box-shadow: 0 5px 15px rgba(72, 199, 180, 0.4);
+        }
+        .btn-custom:hover { background-color: #38a897; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(72, 199, 180, 0.6); }
+
+        /* Popular Destinations */
+        .destinations-section {
+            background-color: #1a1a1a;
+            padding: 60px 0;
+            color: white;
+        }
+        .destinations-section h2 {
+            font-weight: 700;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        /* Featured Cards */
+        .dest-card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transition: all 0.3s;
+            background: #2a2a2a;
+            margin-bottom: 30px;
+            height: 100%;
+        }
+        .dest-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.7); }
+        .dest-card img { width: 100%; height: 280px; object-fit: cover; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .card-body-custom { padding: 25px; display: flex; flex-direction: column; justify-content: space-between; height: calc(100% - 280px); }
+        .card-title { font-weight: 700; color: #ff8787; margin-bottom: 15px; font-size: 1.4rem; }
+        .card-text { color: #e0e0e0; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; }
+        .btn-card {
+            background-color: #ff8787;
+            color: white;
+            border-radius: 50px;
+            padding: 10px;
+            font-weight: 600;
+            border: none;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .btn-card:hover { background-color: #fa5252; color: white; }
+        
+        /* Footer */
+        footer { background-color: #2c3e50; color: white; padding: 40px 0 20px; margin-top: auto; }
+        footer a { color: #bdc3c7; text-decoration: none; transition: 0.3s; }
+        footer a:hover { color: white; }
+
+        /* Interactive Elements */
+        .trip-type-btn {
+            height: 220px;
+            font-size: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            border-radius: 25px;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.1), -10px -10px 30px #ffffff;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid transparent;
+            z-index: 1;
+        }
+        .trip-type-btn::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            z-index: -1; transition: opacity 0.4s ease; opacity: 0;
+        }
+        .trip-type-btn.intl::before { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .trip-type-btn:hover::before { opacity: 1; }
+        .trip-type-btn:hover { transform: translateY(-15px); color: white; border-color: rgba(255,255,255,0.5); box-shadow: 0 25px 45px rgba(0,0,0,0.2); }
+        .trip-type-btn i { font-size: 4rem; transition: transform 0.4s; }
+        .trip-type-btn:hover i { transform: scale(1.1); }
+
+        .seat-map-container { overflow-x: auto; padding-bottom: 15px; max-width: 100%; white-space: nowrap; }
+
+        .seat-map { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 300px; margin: 0 auto; }
+                .seat { width: 40px; height: 40px; background: #bdc3c7; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; }
+        .seat.available:hover { background: #95a5a6; }
+        .seat.selected { background: #2ecc71; }
+        .seat.booked { background: #e74c3c; cursor: not-allowed; }
+        .seat-aisle { grid-column: 2 / 3; margin-right: 20px; } /* Create aisle */
+
+        /* Weather & Live info */
+        .live-widget { background: #fff; border-left: 4px solid #3498db; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
+
+        /* Payment */
+        .payment-method { border: 1px solid #dee2e6; border-radius: 10px; padding: 15px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .payment-method.active { border-color: #2ecc71; background: #f0fdf4; box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2); }
+        .payment-method i { font-size: 2rem; margin-bottom: 10px; color: #34495e; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-content-custom {
+            background: white; padding: 30px; border-radius: 15px;
+            max-width: 400px; width: 90%; box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease-out;
+            position: relative;
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <div id="toast-notification" class="position-fixed top-0 start-50 translate-middle-x mt-4 p-3 bg-success text-white rounded shadow" style="display: none; z-index: 99999; min-width: 300px; text-align: center;">
+        <i class="fas fa-check-circle me-2"></i> <span id="toast-msg"></span>
+    </div>
+
+    <div id="custom-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content-custom text-center">
+            <h4 id="modal-title" class="mb-3 text-warning"><i class="fas fa-exclamation-circle"></i> Alert</h4>
+            <p id="modal-message" class="mb-4">Message goes here.</p>
+            <button class="btn btn-primary px-4 fw-bold w-100" onclick="document.getElementById('custom-modal').style.display='none'">OK</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="javascript:void(0)" onclick="navigate('home-page')"><i class="fas fa-plane"></i> Tripzo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-4">
+                    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="navigate('home-page')">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="navigate('trip-type-page')">Book Now</a></li>
+                    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="navigate('about-page')">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="navigate('contact-page')">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link text-warning fw-bold" href="javascript:void(0)" onclick="openAdminLogin()"><i class="fas fa-lock"></i> Admin</a></li>
+                </ul>
+                <button class="btn-wishlist" onclick="alert('Wishlist opened!')"><i class="fas fa-heart"></i> Wishlist</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow-1">
+
+        <!-- 1. HOME PAGE -->
+        <div id="home-page" class="page-section active" style="padding-top: 0;">
+            <section class="hero mb-0">
+                <div class="container">
+                    <h1>Discover the World with Tripzo</h1>
+                    <p>Your ultimate travel companion for unforgettable adventures</p>
+                    <button class="btn-custom" onclick="navigate('trip-type-page')">
+                        <i class="fas fa-map-marker-alt me-2"></i> Visit Amazing Places
+                    </button>
+                </div>
+            </section>
+
+            <section class="destinations-section">
+                <div class="container">
+                    <h2 class="text-center">Popular Destinations</h2>
+                    <div class="row g-4">
+                        <!-- Card 1 -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="dest-card">
+                                <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Paris">
+                                <div class="card-body-custom text-center">
+                                    <div>
+                                        <h4 class="card-title">Paris, France</h4>
+                                        <p class="card-text">Experience the magic of the City of Love with iconic Eiffel Tower views and romantic Seine River cruises.</p>
+                                    </div>
+                                    <button class="btn-card" onclick="selectDestination('Paris')">
+                                        <i class="fas fa-plane me-2"></i> Visit France
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="dest-card">
+                                <img src="https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tokyo">
+                                <div class="card-body-custom text-center">
+                                    <div>
+                                        <h4 class="card-title">Tokyo, Japan</h4>
+                                        <p class="card-text">Discover futuristic cityscapes, ancient temples, and world-class cuisine in the heart of Asia.</p>
+                                    </div>
+                                    <button class="btn-card" onclick="selectDestination('Tokyo')">
+                                        <i class="fas fa-plane me-2"></i> Visit Japan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="dest-card">
+                                <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="New York">
+                                <div class="card-body-custom text-center">
+                                    <div>
+                                        <h4 class="card-title">New York, USA</h4>
+                                        <p class="card-text">The city that never sleeps offers skyscrapers, Broadway shows, and endless energy.</p>
+                                    </div>
+                                    <button class="btn-card" onclick="selectDestination('New York')">
+                                        <i class="fas fa-plane me-2"></i> Visit USA
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card 4 -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="dest-card">
+                                <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Santorini">
+                                <div class="card-body-custom text-center">
+                                    <div>
+                                        <h4 class="card-title">Santorini, Greece</h4>
+                                        <p class="card-text">Stunning white-washed buildings, crystal blue waters, and breathtaking sunsets await.</p>
+                                    </div>
+                                    <button class="btn-card" onclick="selectDestination('Santorini')">
+                                        <i class="fas fa-plane me-2"></i> Visit Greece
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 1.1 ABOUT US PAGE -->
+        <div id="about-page" class="page-section">
+            <div class="container pt-5 text-center">
+                <h2 class="mb-4 fw-bold">About WanderLust Tours</h2>
+                <p class="lead text-muted mx-auto" style="max-width: 800px;">We are a premier travel agency dedicated to providing unforgettable experiences around the globe. With over a decade of experience, we specialize in curating personalized itineraries, ensuring comfort, safety, and adventure for every traveler.</p>
+                <img src="https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" class="img-fluid rounded mt-4 shadow" alt="Travel Team">
+            </div>
+        </div>
+
+        <!-- 1.2 CONTACT PAGE -->
+        <div id="contact-page" class="page-section">
+            <div class="container pt-5">
+                <h2 class="mb-4 fw-bold text-center">Contact Us</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-0 p-4">
+                            <form onsubmit="event.preventDefault(); alert('Message sent successfully! We will get back to you soon.'); navigate('home-page');">
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Message</label>
+                                    <textarea class="form-control" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. TYPE OF TRIP PAGE -->
+        <div id="trip-type-page" class="page-section bg-trip-type">
+            <div class="container text-center pt-5">
+                <h2 class="mb-5 fw-bold">Where would you like to travel?</h2>
+                <div class="row justify-content-center g-4">
+                    <div class="col-md-5">
+                        <div class="trip-type-btn" onclick="setTripType('national')">
+                            <i class="fas fa-flag-in"></i>
+                            <span class="fw-bold">National (Domestic)</span>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="trip-type-btn intl" onclick="setTripType('international')">
+                            <i class="fas fa-globe-americas"></i>
+                            <span class="fw-bold">International</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Unique Feature: Eco-friendly text -->
+                <p class="mt-5 text-muted"><i class="fas fa-leaf text-success"></i> All our trips include a Carbon Offset option to protect our planet.</p>
+            </div>
+        </div>
+
+        <!-- 3. CHOOSE DESTINATION PAGE -->
+        <div id="destination-page" class="page-section bg-destination">
+            <div class="container pt-4">
+                <button class="btn btn-sm btn-outline-secondary mb-4" onclick="navigate('trip-type-page')"><i class="fas fa-arrow-left"></i> Back</button>
+                <h2 class="mb-4 fw-bold">Choose Your Destination</h2>
+                <div class="row" id="destination-list">
+                    <!-- Populated by JS based on selection -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.5 FAMOUS PLACES PAGE -->
+        <div id="famous-places-page" class="page-section bg-package">
+            <div class="container pt-4">
+                <button class="btn btn-sm btn-outline-secondary mb-4" onclick="if(currentTripType === '') { navigate('trip-type-page'); } else { navigate('destination-page'); }"><i class="fas fa-arrow-left"></i> Back</button>
+                <h2 class="mb-4 fw-bold" id="famous-places-title">Famous Spots</h2>
+                
+                                <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+                    <h5 class="mb-0 fw-bold">Select Famous Spots (Select as many as you like!)</h5>
+                    <div id="duration-date-selector" class="d-flex gap-3" style="display: none !important;">
+                        <div style="width: 200px;">
+                            <label class="small text-muted mb-1 fw-bold">Select Total Duration</label>
+                            <select class="form-select" id="global-travel-duration">
+                                <option value="3 Days / 2 Nights">3 Days / 2 Nights</option>
+                                <option value="5 Days / 4 Nights" selected>5 Days / 4 Nights</option>
+                                <option value="7 Days / 6 Nights">7 Days / 6 Nights</option>
+                                <option value="10+ Days">10+ Days</option>
+                            </select>
+                        </div>
+                        <div style="width: 200px;">
+                            <label class="small text-muted mb-1 fw-bold">Select Travel Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="global-travel-date" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="multi-spot-proceed-bar" class="card shadow-lg border-success mb-4" style="display: none;">
+                    <div class="card-body d-flex justify-content-between align-items-center bg-light">
+                        <h5 class="mb-0 fw-bold text-success"><i class="fas fa-check-circle me-2"></i><span id="selected-spot-count">0</span> Spots Selected</h5>
+                        <button class="btn btn-success fw-bold px-4 py-2" onclick="confirmAndProceedMultiSpot()">Proceed to Package Details <i class="fas fa-arrow-right ms-2"></i></button>
+                    </div>
+                </div>
+
+                <div id="sub-destinations-container" class="row">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. PACKAGE/DATE SELECTION PAGE (LIVE INFO) -->
+        <div id="package-details-page" class="page-section bg-booking">
+            <div class="container pt-4">
+                <button class="btn btn-sm btn-outline-secondary mb-4" onclick="navigate('famous-places-page')"><i class="fas fa-arrow-left"></i> Back</button>
+                <h2 class="mb-4 fw-bold" id="selected-dest-name">Destination Details</h2>
+                
+                <div class="row">
+                    <div class="col-lg-8">
+                        <!-- Video / Images Gallery -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5>Destination Preview <span class="badge bg-warning text-dark float-end"><i class="fas fa-star"></i> Popular</span></h5>
+                                <div class="ratio ratio-16x9 mb-3 bg-dark rounded overflow-hidden">
+                                    <!-- Mock Video Area -->
+                                    <div class="d-flex align-items-center justify-content-center text-white flex-column">
+                                        <i class="fas fa-play-circle fa-4x mb-2" style="color: rgba(255,255,255,0.7); cursor: pointer;" onclick="alert('Playing destination promo video...')"></i>
+                                        <p>Play Promotional Video</p>
+                                    </div>
+                                </div>
+                                <p>Discover the hidden gems, cultural heritage, and breathtaking landscapes of this magical place.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <!-- Live API Widgets (Mocked) -->
+                        <h5 class="mb-3">Live Updates</h5>
+                        
+                        <!-- Weather -->
+                        <div class="live-widget">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0 text-muted">Current Weather</h6>
+                                    <h3 class="mb-0 mt-1" id="weather-temp"><span class="spinner-border spinner-border-sm text-primary" role="status"></span></h3>
+                                    <small id="weather-desc">Fetching API...</small>
+                                </div>
+                                <i id="weather-icon" class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                            </div>
+                        </div>
+
+                        <!-- Hotel Availability -->
+                        <div class="live-widget" style="border-left-color: #e67e22;">
+                            <h6 class="text-muted"><i class="fas fa-hotel me-2"></i>Hotel Availability</h6>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Luxury Hotels:</span> <span class="text-success fw-bold">12 Rooms Left</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <span>Budget Hotels:</span> <span class="text-warning fw-bold">High Demand</span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2 w-100" onclick="navigate('hotel-booking-page')">View Hotels</button>
+                        </div>
+
+                        <!-- Transport Details -->
+                        <div class="live-widget" style="border-left-color: #9b59b6;">
+                            <h6 class="text-muted" id="transport-title"><i class="fas fa-plane-departure me-2"></i>Flight Status</h6>
+                            
+                            <div id="transport-mode-toggle" class="mb-3" style="display:none;">
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio-flight" autocomplete="off" checked onchange="toggleTransportMode('flight')">
+                                    <label class="btn btn-outline-primary btn-sm" for="btnradio-flight"><i class="fas fa-plane"></i> Flight</label>
+
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio-train" autocomplete="off" onchange="toggleTransportMode('train')">
+                                    <label class="btn btn-outline-primary btn-sm" for="btnradio-train"><i class="fas fa-train"></i> Train</label>
+                                </div>
+                            </div>
+
+                            <div id="domestic-train-selector" style="display: none;" class="mb-2">
+                                <label class="small text-muted mb-1">Select your starting city:</label>
+                                <select class="form-select form-select-sm" onchange="updateTransportDetails(this.value, 'train')">
+                                    <option value="" disabled selected>Choose train origin...</option>
+                                    <option value="New Delhi">New Delhi</option>
+                                    <option value="Mumbai">Mumbai</option>
+                                    <option value="Bangalore">Bangalore</option>
+                                    <option value="Chennai">Chennai</option>
+                                    <option value="Kolkata">Kolkata</option>
+                                </select>
+                            </div>
+
+                            <div id="flight-selector" style="display: none;" class="mb-2">
+                                <label class="small text-muted mb-1">Select departure airport:</label>
+                                <select class="form-select form-select-sm" onchange="updateTransportDetails(this.value, 'flight')">
+                                    <option value="" disabled selected>Choose departure airport...</option>
+                                    <option value="DEL">New Delhi (DEL)</option>
+                                    <option value="BOM">Mumbai (BOM)</option>
+                                    <option value="BLR">Bangalore (BLR)</option>
+                                    <option value="MAA">Chennai (MAA)</option>
+                                </select>
+                            </div>
+
+                            <div id="transport-details-container" style="display:none;">
+                                <p class="mb-1 small" id="transport-subtitle">Next available departure:</p>
+                                <div class="d-flex justify-content-between fw-bold" id="transport-times">
+                                    <span>10:30 AM</span> <i class="fas fa-long-arrow-alt-right text-muted"></i> <span>02:15 PM</span>
+                                </div>
+                                <small class="text-success" id="transport-status"><i class="fas fa-check-circle"></i> On Time</small>
+                                
+                                <button class="btn btn-sm btn-outline-primary mt-3 w-100 fw-bold" id="live-train-btn" style="display:none;" onclick="startTrainSearch()"><i class="fas fa-search"></i> Search Live Trains API</button>
+                                <button class="btn btn-sm btn-outline-info mt-3 w-100 fw-bold" id="live-flight-btn" style="display:none;" onclick="startFlightSearch()"><i class="fas fa-search"></i> Search Live Flights API</button>
+                            </div>
+                        </div>
+
+                        <!-- Unique Feature: Carbon footprint -->
+                        <div class="live-widget" style="border-left-color: #2ecc71; background: #f9fff9;">
+                            <h6 class="text-success"><i class="fas fa-leaf me-2"></i>Eco-Footprint Estimate</h6>
+                            <p class="mb-0 small">Est. CO2 emissions: <b>245 kg</b></p>
+                            <small class="text-muted">Offset for just $5 during checkout.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. TRANSPORT BOOKING PAGE -->
+        <div id="booking-page" class="page-section bg-booking">
+            <div class="container pt-4">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card shadow-lg border-0">
+                            <div class="card-header bg-primary text-white p-4">
+                                <h3 class="mb-0" id="booking-title"><i class="fas fa-ticket-alt me-2"></i>Passenger Details & Seats</h3>
+                            </div>
+                            <div class="card-body p-4">
+                                <form id="bookingForm">
+                                    <div id="booking-step-1">
+                                        <h5 class="border-bottom pb-2 mb-3">Primary Contact Information</h5>
+                                        <div class="row g-3 mb-4">
+                                            <div class="col-md-6">
+                                                <input type="email" class="form-control" placeholder="Email Address" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="tel" class="form-control" placeholder="Phone Number" required>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label text-muted mb-1">Number of Passengers / Seats Required</label>
+                                                <input type="number" class="form-control fw-bold fs-5 text-center text-primary" style="max-width: 150px; background-color: #f0f8ff; border: 2px solid #89f7fe;" min="1" max="10" required id="paxCount" onchange="updateSeatReq()" value="1">
+                                            </div>
+                                        </div>
+                                        
+                                        <h5 class="border-bottom pb-2 mb-3">Passenger Details</h5>
+                                        <div id="passenger-fields-container" class="mb-4">
+                                            <!-- Dynamically generated based on paxCount -->
+                                        </div>
+                                    </div>
+
+                                    <h5 class="border-bottom pb-2 mb-3">Select Flight Seats <small class="text-muted fs-6" id="seat-req-msg">(Select 1 seat)</small></h5>
+                                    
+                                    <div class="d-flex justify-content-center mb-4 gap-4 bg-white p-3 rounded shadow-sm border">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="seatClass" id="classEconomy" value="Economy" onclick="initSeats('Economy')" checked>
+                                            <label class="form-check-label fw-bold" style="color: #00cec9;" for="classEconomy">Economy Class</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="seatClass" id="classBusiness" value="Business" onclick="initSeats('Business')">
+                                            <label class="form-check-label fw-bold" style="color: #6c5ce7;" for="classBusiness">Business Class</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mb-3 gap-3">
+                                        <span class="badge bg-secondary"><i class="fas fa-square"></i> Available</span>
+                                        <span class="badge bg-warning text-dark"><i class="fas fa-square"></i> Selected</span>
+                                        <span class="badge bg-danger"><i class="fas fa-square"></i> Booked</span>
+                                    </div>
+                                    
+                                    <div id="seat-maps-wrapper">
+                                        <div id="booking-map-1-container" class="bg-light p-4 rounded mb-4" style="border: 2px solid #e9ecef;">
+                                            <h6 class="text-center mb-3 fw-bold text-primary" id="seat-map-1-title">Flight Seats</h6>
+                                            <div class="text-center mb-3 text-muted"><i class="fas fa-plane fa-2x" style="transform: rotate(-90deg);"></i><br>Front</div>
+                                            <div class="seat-map-container text-center">
+                                                <div class="seat-map d-inline-block text-start" id="seatMap1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="booking-map-2-container" class="bg-light p-4 rounded mb-4" style="border: 2px solid #e9ecef; display: none;">
+                                            <h6 class="text-center mb-3 fw-bold text-warning" id="seat-map-2-title">Flight 2 Seats</h6>
+                                            <div class="text-center mb-3 text-muted"><i class="fas fa-plane fa-2x" style="transform: rotate(-90deg);"></i><br>Front</div>
+                                            <div class="seat-map-container text-center">
+                                                <div class="seat-map d-inline-block text-start" id="seatMap2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                        <button type="button" class="btn btn-outline-secondary" id="btn-back-booking" onclick="goBackBooking()">Back to Results</button>
+                                        <button type="button" class="btn btn-success px-5 py-2 fw-bold" id="btn-proceed-booking" onclick="proceedBooking()">Proceed to Hotel Booking <i class="fas fa-bed ms-2"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. HOTEL BOOKING (LIVE API) -->
+        <div id="hotel-booking-page" class="page-section bg-hotel">
+            <div class="container pt-4">
+                <button class="btn btn-sm btn-outline-secondary mb-4" onclick="navigate('package-details-page')"><i class="fas fa-arrow-left"></i> Back to Package details</button>
+                
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h2 class="mb-0 fw-bold">Live Hotel Map: <span id="hotel-dest-title" class="text-primary"></span></h2>
+                </div>
+                
+                <!-- HOTEL WIDGET CONTAINER -->
+                <div class="card shadow-sm border-0 mb-4 bg-white" style="min-height: 500px; display: flex; align-items: center; justify-content: center; overflow: hidden;" id="travelpayouts-widget-container">
+                    <div class="spinner-border text-primary" role="status" id="widget-spinner"><span class="visually-hidden">Loading...</span></div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- 6.5 TRAIN BOOKING (LIVE API MOCK) -->
+        <div id="train-booking-page" class="page-section bg-train">
+            <div class="container pt-4">
+                <button class="btn btn-sm btn-outline-secondary mb-4" onclick="navigate('package-details-page')"><i class="fas fa-arrow-left"></i> Back to Package</button>
+                <h2 class="mb-4 fw-bold text-dark"><span class="live-dot"></span>Live Train Availability <small class="text-success fs-6 fw-normal">(Connected to IRCTC API)</small></h2>
+                
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body bg-light rounded">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">From <span class="text-danger">*</span></label>
+                                <select class="form-select" id="train-from">
+                                    <option value="" disabled selected>Choose train origin...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">To</label>
+                                <input type="text" class="form-control" id="train-to" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date</label>
+                                <input type="date" class="form-control" id="train-date" required>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-primary w-100" onclick="fetchLiveTrains()"><i class="fas fa-search me-2"></i>Search Trains</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="train-loading" class="text-center py-5" style="display:none;">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+                    <h5 class="text-muted">Fetching live availability via API...</h5>
+                </div>
+
+                <div id="train-results" class="row g-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 6.75 FLIGHT BOOKING (LIVE API MOCK) -->
+        <div id="flight-booking-page" class="page-section bg-flight">
+            <div class="container pt-4">
+                <button class="btn btn-sm btn-outline-secondary mb-4" onclick="navigate('package-details-page')"><i class="fas fa-arrow-left"></i> Back to Package</button>
+                <h2 class="mb-4 fw-bold text-dark"><span class="live-dot"></span>Live Flight Availability <small class="text-success fs-6 fw-normal">(Connected to Airlines API)</small></h2>
+                
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body bg-light rounded text-dark">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">From</label>
+                                <select class="form-select" id="flight-from">
+                                    <option value="DEL">New Delhi (DEL)</option>
+                                    <option value="BOM">Mumbai (BOM)</option>
+                                    <option value="BLR">Bangalore (BLR)</option>
+                                    <option value="MAA">Chennai (MAA)</option>
+                                    <option value="CJB">Coimbatore (CJB)</option>
+                                    <option value="IXM">Madurai (IXM)</option>
+                                    <option value="TRZ">Tiruchirappalli (TRZ)</option>
+                                    <option value="HYD">Hyderabad (HYD)</option>
+                                    <option value="CCU">Kolkata (CCU)</option>
+                                    <option value="AMD">Ahmedabad (AMD)</option>
+                                    <option value="PNQ">Pune (PNQ)</option>
+                                    <option value="COK">Cochin (COK)</option>
+                                    <option value="TRV">Trivandrum (TRV)</option>
+                                    <option value="GOI">Goa (GOI)</option>
+                                    <option value="JAI">Jaipur (JAI)</option>
+                                    <option value="LKO">Lucknow (LKO)</option>
+                                    <option value="GAU">Guwahati (GAU)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">To</label>
+                                <input type="text" class="form-control" id="flight-to" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date</label>
+                                <input type="date" class="form-control" id="flight-date" required>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-info text-white w-100 fw-bold" onclick="fetchLiveFlights()"><i class="fas fa-search me-2"></i>Search Flights</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="flight-loading" class="text-center py-5 text-white" style="display:none;">
+                    <div class="spinner-border text-light mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+                    <h5>Fetching live availability via API...</h5>
+                </div>
+
+                <div id="flight-results" class="row g-4 text-dark">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 6.8 PACKAGE FLIGHT SEARCH PAGE -->
+        <div id="package-flight-search-page" class="page-section bg-flight">
+            <div class="container pt-4">
+                <button class="btn btn-sm btn-outline-secondary mb-4" onclick="navigate('hotel-booking-page')"><i class="fas fa-arrow-left"></i> Back to Hotel Selection</button>
+                <h2 class="mb-4 fw-bold text-dark"><span class="live-dot"></span>Package Flight Selection <small class="text-success fs-6 fw-normal">(Powered by Duffel API Data)</small></h2>
+                
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body bg-light rounded text-dark">
+                        <div class="row g-3 align-items-end">
+                                                        <div class="col-md-3">
+                                <label class="form-label">Departure</label>
+                                <select class="form-select" id="pkg-flight-from">
+                                    <option value="DEL">New Delhi (DEL)</option>
+                                    <option value="BOM">Mumbai (BOM)</option>
+                                    <option value="BLR">Bangalore (BLR)</option>
+                                    <option value="MAA">Chennai (MAA)</option>
+                                    <option value="CJB">Coimbatore (CJB)</option>
+                                    <option value="IXM">Madurai (IXM)</option>
+                                    <option value="TRZ">Tiruchirappalli (TRZ)</option>
+                                    <option value="HYD">Hyderabad (HYD)</option>
+                                    <option value="CCU">Kolkata (CCU)</option>
+                                    <option value="AMD">Ahmedabad (AMD)</option>
+                                    <option value="PNQ">Pune (PNQ)</option>
+                                    <option value="COK">Cochin (COK)</option>
+                                    <option value="TRV">Trivandrum (TRV)</option>
+                                    <option value="GOI">Goa (GOI)</option>
+                                    <option value="JAI">Jaipur (JAI)</option>
+                                    <option value="LKO">Lucknow (LKO)</option>
+                                    <option value="GAU">Guwahati (GAU)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Destination</label>
+                                <input type="text" class="form-control" id="pkg-flight-to" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date</label>
+                                <input type="date" class="form-control" id="pkg-flight-date" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-info text-white w-100 fw-bold" onclick="fetchPackageFlights()"><i class="fas fa-search me-2"></i>Search Flights</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pkg-flight-loading" class="text-center py-5 text-white" style="display:none;">
+                    <div class="spinner-border text-light mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+                    <h5>Authenticating with Duffel Test Token...<br><small>Fetching live availability...</small></h5>
+                </div>
+
+                <div id="pkg-flight-results" class="row g-4 text-dark">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. PAYMENT PAGE -->
+        <div id="payment-page" class="page-section bg-payment">
+            <div class="container pt-4">
+                <button class="btn btn-sm btn-outline-secondary mb-4" onclick="navigate('booking-page')"><i class="fas fa-arrow-left"></i> Back to Booking</button>
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card shadow-lg border-0">
+                            <div class="card-header bg-success text-white p-4">
+                                <h3 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Details</h3>
+                            </div>
+                            <div class="card-body p-4">
+                                <h5 class="mb-4 text-center">Amount Payable: <span class="text-primary fw-bold">$2,450</span></h5>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <div class="payment-method active p-3 text-center border rounded shadow-sm flex-fill me-2" onclick="selectPayment(this, 'card')" style="cursor:pointer;">
+                                        <i class="fas fa-credit-card fa-2x text-primary mb-2 d-block"></i> Card
+                                    </div>
+                                    <div class="payment-method p-3 text-center border rounded shadow-sm flex-fill mx-1" onclick="selectPayment(this, 'upi')" style="cursor:pointer;">
+                                        <i class="fas fa-mobile-alt fa-2x text-success mb-2 d-block"></i> UPI
+                                    </div>
+                                    <div class="payment-method p-3 text-center border rounded shadow-sm flex-fill ms-2" onclick="selectPayment(this, 'netbanking')" style="cursor:pointer;">
+                                        <i class="fas fa-university fa-2x text-secondary mb-2 d-block"></i> Bank
+                                    </div>
+                                </div>
+                                <div id="payment-form-area">
+                                    <div class="mb-3"><input type="text" id="payment-input" class="form-control" placeholder="Card Number (16 digits)" required></div>
+                                    <div class="row g-2 mb-4">
+                                        <div class="col-6"><input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" required></div>
+                                        <div class="col-6"><input type="text" id="card-cvv" class="form-control" placeholder="CVV" required></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-success w-100 py-3 fw-bold fs-5" id="pay-btn" onclick="processPayment()"><i class="fas fa-lock me-2"></i> Pay Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. SUCCESS PAGE -->
+        <div id="success-page" class="page-section bg-success-page">
+            <div class="container pt-5 text-center">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-success" style="font-size: 6rem;"></i>
+                </div>
+                <h1 class="display-4 fw-bold text-success mb-3">Payment Successful!</h1>
+                <h3 class="text-secondary mb-4">Happy Journey! ????</h3>
+                
+                <div class="card border-0 bg-light mx-auto" style="max-width: 500px;">
+                    <div class="card-body p-4">
+                        <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i> Ticket and trip details have been sent to your <strong>Email</strong> and <strong>Phone</strong>.</p>
+                        <p class="mb-0 text-muted small"><i class="fas fa-bell text-warning me-2"></i> We will send you a reminder notification 24 hours before your trip.</p>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <button class="btn btn-outline-primary" onclick="navigate('home-page')"><i class="fas fa-home me-2"></i> Return to Home</button>
+                    <button class="btn btn-primary ms-2" onclick="alert('Downloading Ticket PDF...')"><i class="fas fa-download me-2"></i> Download Ticket</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold">Wander<span>Lust</span> Tours</h5>
+                    <p class="small mt-3">Your trusted partner for creating unforgettable travel experiences around the globe. Professional, reliable, and tailored to you.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold">Quick Links</h5>
+                    <ul class="list-unstyled small mt-3">
+                        <li><a href="javascript:void(0)" onclick="navigate('home-page')">Home</a></li>
+                        <li><a href="javascript:void(0)" onclick="navigate('trip-type-page')">Packages</a></li>
+                        <li><a href="javascript:void(0)" onclick="alert('Opening Terms & Conditions...')">Terms & Conditions</a></li>
+                        <li><a href="javascript:void(0)" onclick="alert('Opening Privacy Policy...')">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold">Contact Us</h5>
+                    <ul class="list-unstyled small mt-3">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Travel Avenue, NY 10001</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 234 567 8900</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@wanderlust.com</li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="javascript:void(0)" onclick="alert('Opening Facebook...')" class="me-3 fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="javascript:void(0)" onclick="alert('Opening Twitter...')" class="me-3 fs-5"><i class="fab fa-twitter"></i></a>
+                        <a href="javascript:void(0)" onclick="alert('Opening Instagram...')" class="fs-5"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary small">
+                &copy; 2026 WanderLust Tours. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <!-- AI Travel Assistant -->
+    <div id="ai-chat-widget">
+        <button id="ai-chat-btn" onclick="toggleChat()">
+            <i class="fas fa-robot me-2"></i> AI Guide
+        </button>
+        <div id="ai-chat-box" style="display:none;">
+            <div class="chat-header bg-primary text-white p-3 rounded-top d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-robot me-2"></i> AI Travel Assistant</span>
+                <i class="fas fa-times" style="cursor:pointer;" onclick="toggleChat()"></i>
+            </div>
+            <div class="chat-body p-3" id="chat-messages" style="height: 250px; overflow-y: auto; background: #f8f9fa;">
+                <div class="chat-msg ai-msg p-2 rounded shadow-sm mb-2" style="max-width: 85%;">
+                    Hi! I'm your AI Travel Guide. Need help planning your trip, choosing a flight class, or finding a hotel?
+                </div>
+            </div>
+            <div class="chat-footer p-2 bg-white border-top d-flex">
+                <input type="text" id="chat-input" class="form-control form-control-sm me-2" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendChat()">
+                <button class="btn btn-sm btn-primary" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="room-select-modal" class="modal-overlay" style="display:none; z-index: 9999;">
+        <div class="modal-content-custom">
+            <h4 class="mb-3 text-primary"><i class="fas fa-bed"></i> Room Selection</h4>
+            <p class="mb-3 text-muted">Please select your preferred room type for this hotel.</p>
+            <div class="mb-4 text-start">
+                <label class="form-label fw-bold">Room Type</label>
+                <select class="form-select border-primary" id="final-room-type">
+                    <option value="Standard Room">Standard Room</option>
+                    <option value="Deluxe Room" selected>Deluxe Room</option>
+                    <option value="Executive Suite">Executive Suite</option>
+                    <option value="Presidential Suite">Presidential Suite</option>
+                </select>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary w-50" onclick="document.getElementById('room-select-modal').style.display='none'">Cancel</button>
+                <button class="btn btn-primary w-50 fw-bold" onclick="confirmHotelRoom()">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectHotelAction(hotelName) {
+            document.getElementById('room-select-modal').style.display = 'flex';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+
+        function confirmHotelRoom() {
+            document.getElementById('room-select-modal').style.display = 'none';
+            showToast("Hotel & Room booked successfully! The price will be added to the final payment page.");
+            setTimeout(() => { navigate('package-flight-search-page'); }, 1200);
+        }
+
+        function toggleReturnDate() {
+            const isRoundTrip = document.getElementById('pkg-flight-type').value === 'roundtrip';
+            document.getElementById('pkg-return-date-container').style.display = isRoundTrip ? 'block' : 'none';
+        }
+
+        function proceedBooking() {
+            if(isCurrentBookingConnecting && currentBookingStep === 1) {
+                // Move to second flight map
+                currentBookingStep = 2;
+                document.getElementById('booking-step-1').style.display = 'none';
+                document.getElementById('booking-map-1-container').style.display = 'none';
+                document.getElementById('booking-map-2-container').style.display = 'block';
+                document.getElementById('btn-proceed-booking').innerHTML = `Proceed to Payment <i class="fas fa-credit-card ms-2"></i>`;
+                document.getElementById('btn-back-booking').innerText = "Back to Outbound Flight";
+            } else {
+                // Final proceed to payment
+                navigate('payment-page');
+            }
+        }
+
+        function goBackBooking() {
+            if(isCurrentBookingConnecting && currentBookingStep === 2) {
+                // Move back to first flight map
+                currentBookingStep = 1;
+                document.getElementById('booking-step-1').style.display = 'block';
+                document.getElementById('booking-map-1-container').style.display = 'block';
+                document.getElementById('booking-map-2-container').style.display = 'none';
+                document.getElementById('btn-proceed-booking').innerHTML = `Proceed to Return Flight Seats <i class="fas fa-arrow-right ms-2"></i>`;
+                document.getElementById('btn-back-booking').innerText = "Back to Search";
+            } else {
+                navigate('package-flight-search-page');
+            }
+        }
+
+                // ==========================================
+        // DATA INITIALIZATION LAYER (Must run first!)
+        // ==========================================
+        function safeParseJSON(key) {
+            try {
+                const val = localStorage.getItem(key);
+                return val ? JSON.parse(val) : null;
+            } catch(e) {
+                console.warn("Corrupted localStorage for " + key + ". Resetting.");
+                return null;
+            }
+        }
+        
+        window.apiDestinations = safeParseJSON('apiDestinations');
+        window.apiSubDestDB = safeParseJSON('apiSubDestDB');
+        window.apiBookings = safeParseJSON('apiBookings') || [];
+        window.apiEnquiries = safeParseJSON('apiEnquiries') || [];
+        window.apiCMS = safeParseJSON('apiCMS') || {
+            heroTitle: "Explore the World with Tripzo",
+            heroSubtitle: "Book your flights, trains, hotels, and holiday packages all in one place. Discover amazing destinations today.",
+            aboutText: "We are a premier travel agency dedicated to providing unforgettable experiences around the globe. With over a decade of experience, we specialize in curating personalized itineraries, ensuring comfort, safety, and adventure for every traveler."
+        };
+
+        if(!window.apiDestinations || !window.apiDestinations.national || window.apiDestinations.national.length <= 2) {
+            window.apiDestinations = {
+                national: [
+                    { name: "Goa", img: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=500&q=80", desc: "Beaches & Sunsets" },
+                    { name: "Kerala", img: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=500&q=80", desc: "Backwaters & Nature" },
+                    { name: "Rajasthan", img: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=500&q=80", desc: "Forts & Palaces" },
+                    { name: "Manali", img: "https://images.unsplash.com/photo-1605649487212-4d43eb45c201?w=500&q=80", desc: "Mountains & Snow" }
+                ],
+                international: [
+                    { name: "Switzerland", img: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=500&q=80", desc: "Alps & Lakes" },
+                    { name: "Dubai", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&q=80", desc: "Luxury & Desert" },
+                    { name: "France", img: "https://images.unsplash.com/photo-1502602898657-3e907604085f?w=500&q=80", desc: "Romance & Art" },
+                    { name: "Bali", img: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=500&q=80", desc: "Tropical Paradise" }
+                ]
+            };
+            try { try { localStorage.setItem('apiDestinations', JSON.stringify(window.apiDestinations)); } catch(e) { console.warn("Storage disabled"); } } catch(e) {}
+        }
+
+                // Force overwrite database for expanded spots
+        window.apiSubDestDB = {
+            "Goa": [
+                { title: "North Goa Beaches", img: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=400&q=80", pkg: "Beaches & Parties" },
+                { title: "South Goa Resorts", img: "https://images.unsplash.com/photo-1544422960-46eb82e8825c?w=400&q=80", pkg: "Relaxation & Luxury" },
+                { title: "Dudhsagar Waterfalls", img: "https://images.unsplash.com/photo-1620216447814-118eb300c0a3?w=400&q=80", pkg: "Nature & Adventure" },
+                { title: "Old Goa Heritage", img: "https://images.unsplash.com/photo-1598463908865-fb2df253a650?w=400&q=80", pkg: "Churches & Culture" },
+                { title: "Spice Plantations", img: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400&q=80", pkg: "Eco Tourism" }
+            ],
+            "Rajasthan": [
+                { title: "Amber Fort & Palaces", img: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=400&q=80", pkg: "Heritage Tour" },
+                { title: "Hawa Mahal City Walk", img: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=400&q=80", pkg: "Express Tour" },
+                { title: "Udaipur Lakes", img: "https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?w=400&q=80", pkg: "Romantic Getaway" },
+                { title: "Jaisalmer Desert", img: "https://images.unsplash.com/photo-1533228945958-6701a5fc1a62?w=400&q=80", pkg: "Desert Safari" }
+            ],
+            "Manali": [
+                { title: "Solang Valley Adventure", img: "https://images.unsplash.com/photo-1605649487212-4d43eb45c201?w=400&q=80", pkg: "Snow Trek" },
+                { title: "Rohtang Pass", img: "https://images.unsplash.com/photo-1626621341517-bbf3e99c0f99?w=400&q=80", pkg: "Mountain Retreat" },
+                { title: "Old Manali Cafes", img: "https://images.unsplash.com/photo-1587003004071-8bc68a62f5f1?w=400&q=80", pkg: "Vibe & Chill" },
+                { title: "Kasol & Parvati Valley", img: "https://images.unsplash.com/photo-1626615712170-c75c80ba8208?w=400&q=80", pkg: "Backpacker Paradise" }
+            ],
+            "Kerala": [
+                { title: "Munnar Tea Gardens", img: "https://images.unsplash.com/photo-1643209503387-a2f2603fcbb7?w=400&q=80", pkg: "Nature Escape" },
+                { title: "Alleppey Houseboats", img: "https://images.unsplash.com/photo-1593693397690-362bc1c50406?w=400&q=80", pkg: "Backwaters Cruise" },
+                { title: "Wayanad Forests", img: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=400&q=80", pkg: "Wildlife Tour" },
+                { title: "Varkala Beach", img: "https://images.unsplash.com/photo-1621258673898-e4b9dc28157e?w=400&q=80", pkg: "Cliff Seaside" }
+            ],
+            "Switzerland": [
+                { title: "Zurich & Lucerne", img: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=400&q=80", pkg: "Premium Tour" },
+                { title: "Interlaken Alps", img: "https://images.unsplash.com/photo-1527668752968-14ce70a4c0aa?w=400&q=80", pkg: "Adventure" },
+                { title: "Geneva Lake", img: "https://images.unsplash.com/photo-1596766442654-2b62d057a66b?w=400&q=80", pkg: "Scenic Beauty" },
+                { title: "Zermatt Matterhorn", img: "https://images.unsplash.com/photo-1510006277717-b77fcb4a8e03?w=400&q=80", pkg: "Ski & Snow" },
+                { title: "Bern Old Town", img: "https://images.unsplash.com/photo-1590458117769-d9dc511e6d4c?w=400&q=80", pkg: "Culture" }
+            ],
+            "Dubai": [
+                { title: "Burj Khalifa & Mall", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&q=80", pkg: "City Tour" },
+                { title: "Desert Safari", img: "https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=400&q=80", pkg: "Adventure" },
+                { title: "Palm Jumeirah", img: "https://images.unsplash.com/photo-1577943801267-27b9c9f0b5cc?w=400&q=80", pkg: "Luxury Island" },
+                { title: "Dubai Marina", img: "https://images.unsplash.com/photo-1528701202353-832f010f3c5b?w=400&q=80", pkg: "Yachting & Dining" },
+                { title: "Old Dubai & Souks", img: "https://images.unsplash.com/photo-1582650570381-80120268579d?w=400&q=80", pkg: "Heritage" }
+            ],
+            "Bali": [
+                { title: "Ubud Temples", img: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&q=80", pkg: "Cultural Tour" },
+                { title: "Nusa Penida", img: "https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=400&q=80", pkg: "Beach Escape" },
+                { title: "Seminyak Vibes", img: "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&q=80", pkg: "Nightlife & Spa" },
+                { title: "Mount Batur Trek", img: "https://images.unsplash.com/photo-1604999333679-b86d54738315?w=400&q=80", pkg: "Volcano Sunrise" }
+            ],
+            "France": [
+                { title: "Paris City of Love", img: "https://images.unsplash.com/photo-1502602898657-3e907604085f?w=400&q=80", pkg: "Romance Tour" },
+                { title: "French Riviera", img: "https://images.unsplash.com/photo-1533552755457-5b43178e9dba?w=400&q=80", pkg: "Coastal Trip" },
+                { title: "Mont Saint-Michel", img: "https://images.unsplash.com/photo-1549469502-3112bdcdde5d?w=400&q=80", pkg: "Historic Abbey" },
+                { title: "Loire Valley Châteaux", img: "https://images.unsplash.com/photo-1563212884-257850a1ecbe?w=400&q=80", pkg: "Castles & Wine" },
+                { title: "Bordeaux Vineyards", img: "https://images.unsplash.com/photo-1506161746401-20e3630f9a2e?w=400&q=80", pkg: "Wine Tasting" }
+            ]
+        };
+        try { localStorage.setItem('apiSubDestDB', JSON.stringify(window.apiSubDestDB)); } catch(e) {}
+
+        function toggleChat() {
+            const box = document.getElementById('ai-chat-box');
+            const btn = document.getElementById('ai-chat-btn');
+            if(box.style.display === 'none') {
+                box.style.display = 'flex';
+                btn.style.display = 'none';
+            } else {
+                box.style.display = 'none';
+                btn.style.display = 'block';
+            }
+        }
+
+        function showPopup(msg, title = "Alert") {
+            document.getElementById('modal-title').innerHTML = title === "Success" 
+                ? '<i class="fas fa-check-circle text-success"></i> Success' 
+                : '<i class="fas fa-exclamation-circle text-warning"></i> Alert';
+            document.getElementById('modal-message').innerHTML = msg;
+            document.getElementById('custom-modal').style.display = 'flex';
+        }
+
+        function validateEmail(email) {
+            return email.includes('@');
+        }
+
+        function sendChat() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if(!msg) return;
+            
+            const chatBody = document.getElementById('chat-messages');
+            chatBody.innerHTML += `<div class="chat-msg user-msg p-2 rounded shadow-sm mb-2" style="max-width: 85%;">${msg}</div>`;
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+            
+            setTimeout(() => {
+                let reply = "That sounds exciting! I can definitely help you plan that.";
+                if(msg.toLowerCase().includes("flight") || msg.toLowerCase().includes("seat") || msg.toLowerCase().includes("class")) {
+                    reply = "Our new real-time flight booking system lets you choose between Business and Economy class. The seat map automatically updates to show you the exact layout!";
+                } else if (msg.toLowerCase().includes("hotel") || msg.toLowerCase().includes("room")) {
+                    reply = "You can book specific rooms like Deluxe or Presidential Suites during the hotel booking step. Need recommendations?";
+                } else if (msg.toLowerCase().includes("price") || msg.toLowerCase().includes("cost")) {
+                    reply = "We offer the best prices! Once you select your package, flights, and hotels, the final amount is securely processed via our payment gateway.";
+                }
+                chatBody.innerHTML += `<div class="chat-msg ai-msg p-2 rounded shadow-sm mb-2" style="max-width: 85%;">${reply}</div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 1000);
+        }
+        // Navigation Logic
+        function navigate(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0,0);
+
+            if(pageId === 'package-flight-search-page') {
+                const dest = document.getElementById('hotel-dest-title').innerText;
+                document.getElementById('pkg-flight-to').value = dest;
+                document.getElementById('pkg-flight-results').innerHTML = '';
+
+                // Dynamic Dropdown Filter Logic
+                const selectFrom = document.getElementById('pkg-flight-from');
+                if (!window.originalPkgFlightOptions) {
+                    window.originalPkgFlightOptions = Array.from(selectFrom.options).map(o => ({ value: o.value, text: o.text }));
+                }
+
+                const smallAirports = ['CJB', 'IXM', 'TRZ', 'PNQ', 'JAI', 'LKO', 'GAU'];
+                const strict1StopDests = ['Paris', 'Switzerland'];
+                
+                selectFrom.innerHTML = ''; // Clear current options
+                window.originalPkgFlightOptions.forEach(opt => {
+                    // For Paris and Switzerland specifically, remove small regional airports
+                    // that wouldn't have a clean 1-stop connection.
+                    if (strict1StopDests.includes(dest) && smallAirports.includes(opt.value)) {
+                        return; // Skip adding
+                    }
+                    
+                    const newOpt = document.createElement('option');
+                    newOpt.value = opt.value;
+                    newOpt.text = opt.text;
+                    selectFrom.appendChild(newOpt);
+                });
+            }
+
+            if(pageId === 'hotel-booking-page') {
+                const titleEl = document.getElementById('selected-dest-name');
+                const fullDest = titleEl.innerText.replace(" Packages", "");
+                document.getElementById('hotel-dest-title').innerText = fullDest;
+                
+                // Get clean destination name from data attribute, otherwise try parsing
+                let searchDest = titleEl.getAttribute('data-dest');
+                if(!searchDest) {
+                    searchDest = fullDest.split(" - ")[0].split(" (")[0];
+                }
+                
+                // Fetch real live hotel data via Nominatim API
+                const widgetContainer = document.getElementById('travelpayouts-widget-container');
+                widgetContainer.innerHTML = '<div class="text-center py-5 w-100"><div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div><h5 class="text-muted">Fetching live hotel data via API...</h5></div>';
+
+                fetch(`https://nominatim.openstreetmap.org/search?q=hotel+in+${encodeURIComponent(searchDest)}&format=json&limit=6`)
+                .then(res => res.json())
+                .then(data => {
+                    if(!data || data.length === 0) {
+                        widgetContainer.innerHTML = '<div class="alert alert-warning m-4 w-100">No hotels found for this destination via the API.</div>';
+                        return;
+                    }
+                    let html = '<div class="row w-100 g-4 p-4 align-items-stretch">';
+                    const images = [
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80",
+                        "https://images.unsplash.com/photo-1551882547-ff40c0d5c9f4?w=500&q=80",
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500&q=80",
+                        "https://images.unsplash.com/photo-1542314831-c6a4d14d8c85?w=500&q=80",
+                        "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?w=500&q=80",
+                        "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=500&q=80"
+                    ];
+                    
+                    const specialities = [
+                        '<i class="fas fa-water text-info"></i> Beach View',
+                        '<i class="fas fa-city text-secondary"></i> City View',
+                        '<i class="fas fa-swimmer text-primary"></i> Swimming Pool',
+                        '<i class="fas fa-wifi text-success"></i> Free WiFi',
+                        '<i class="fas fa-spa text-danger"></i> Spa Included',
+                        '<i class="fas fa-mountain text-success"></i> Mountain View',
+                        '<i class="fas fa-utensils text-warning"></i> Free Breakfast'
+                    ];
+                    
+                    data.forEach((hotel, idx) => {
+                        let name = hotel.name || "Premium Hotel";
+                        let addrParts = hotel.display_name.split(',');
+                        let addr = (addrParts.length > 1) ? addrParts[1].trim() : "City Center";
+                        let price = Math.floor(Math.random() * 200) + 100;
+                        let img = images[idx % images.length];
+                        let spec = specialities[idx % specialities.length];
+                        
+                        html += `
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm" style="transition:0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                                <img src="${img}" class="card-img-top" style="height:200px; object-fit:cover;">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title fw-bold mb-0 text-dark" style="font-size: 1.1rem;">${name}</h5>
+                                    </div>
+                                    <div class="text-warning mb-2" style="font-size:0.8rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                                    <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt me-1 text-danger"></i> ${addr}, ${searchDest}</p>
+                                    <div class="mb-3"><span class="badge bg-light text-dark border">${spec}</span></div>
+                                    <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-end">
+                                        <div><small class="text-muted">Per night</small><h5 class="text-primary fw-bold mb-0">$${price}</h5></div>
+                                        <button class="btn btn-sm btn-outline-primary fw-bold" onclick="selectHotelAction('${name.replace(/'/g, "\\'")}')">Select Hotel & Room</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    html += '</div>';
+                    widgetContainer.innerHTML = html;
+                })
+                .catch(err => {
+                    widgetContainer.innerHTML = '<div class="alert alert-danger m-4 w-100">Failed to fetch API data: ' + err.message + '</div>';
+                });
+                
+            } else if(pageId === 'train-booking-page') {
+                const dest = document.getElementById('selected-dest-name').innerText.replace(" Packages", "");
+                document.getElementById('train-to').value = dest;
+                const userDate = document.getElementById('global-travel-date').value;
+                if (userDate) {
+                    document.getElementById('train-date').value = userDate;
+                } else {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    document.getElementById('train-date').value = tomorrow.toISOString().split('T')[0];
+                }
+                document.getElementById('train-results').innerHTML = '';
+            } else if(pageId === 'flight-booking-page') {
+                const dest = document.getElementById('selected-dest-name').innerText.replace(" Packages", "");
+                document.getElementById('flight-to').value = dest;
+                const userDate = document.getElementById('global-travel-date').value;
+                if (userDate) {
+                    document.getElementById('flight-date').value = userDate;
+                } else {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    document.getElementById('flight-date').value = tomorrow.toISOString().split('T')[0];
+                }
+                document.getElementById('flight-results').innerHTML = '';
+            }
+        }
+
+        // Data Models
+        const destinations = window.apiDestinations;
+
+        let currentTripType = '';
+
+        function setTripType(type) {
+            currentTripType = type;
+            const list = document.getElementById('destination-list');
+            list.innerHTML = '';
+            
+            destinations[type].forEach(dest => {
+                list.innerHTML += `
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="dest-card" onclick="selectDestination('${dest.name}')" style="cursor:pointer;">
+                            <img src="${dest.img}" alt="${dest.name}">
+                            <div class="card-body-custom text-center">
+                                <h5 class="card-title">${dest.name}</h5>
+                                <p class="card-text small">${dest.desc}</p>
+                                ${type === 'national' ? '<p class="weather-info mt-1 text-info small fw-bold"></p>' : ''}
+                                <span class="text-primary small fw-bold">Explore Packages <i class="fas fa-chevron-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const weathers = ['Sunny, 28 C', 'Cloudy, 22 C', 'Rainy, 18 C', 'Clear, 25 C'];
+            document.querySelectorAll('.weather-info').forEach(el => { el.innerText = weathers[Math.floor(Math.random() * weathers.length)]; });
+
+            // Adjust Live widget text based on domestic/intl
+            document.getElementById('transport-title').innerHTML = type === 'national' 
+                ? '<i class="fas fa-train me-2"></i>Train / Flight Status' 
+                : '<i class="fas fa-plane-departure me-2"></i>Flight Status';
+
+            navigate('destination-page');
+        }
+
+        function selectDestination(name) {
+            document.getElementById('famous-places-title').innerText = name + " Packages";
+            
+            const subDestDB = window.apiSubDestDB;
+            const subDestContainer = document.getElementById('sub-destinations-container');
+            
+                        window.selectedSpots = [];
+            if (subDestContainer) {
+                let subs = subDestDB[name] || [{ title: "Standard Tour " + name, img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80", pkg: "5 Days / 4 Nights" }];
+                subDestContainer.innerHTML = '';
+                subs.forEach((s, idx) => {
+                    subDestContainer.innerHTML += `
+                        <div class="col-md-6 col-lg-6 mb-3">
+                        <div class="card border-0 shadow-sm overflow-hidden h-100" id="spot-card-${idx}" style="transition:0.3s; cursor:pointer;" onclick="toggleSpot(${idx}, '${name}')">
+                            <div class="row g-0 h-100">
+                                <div class="col-md-4">
+                                    <img src="${s.img}" class="img-fluid rounded-start h-100" style="object-fit:cover;" alt="${s.title}">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body d-flex flex-column h-100 justify-content-between">
+                                        <div>
+                                            <h5 class="card-title fw-bold text-dark">${s.title}</h5>
+                                            <p class="card-text text-muted small mb-2"><i class="fas fa-tag me-1"></i> ${s.pkg}</p>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-end mt-3">
+                                            <div class="text-primary fw-bold">
+                                                <small class="text-muted d-block" style="font-size: 0.7rem;">Est. Add-on</small>
+                                                ${Math.floor(Math.random() * 500) + 99}
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary" id="spot-btn-${idx}">Select Spot <i class="fas fa-plus ms-1"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('duration-date-selector').style.setProperty('display', 'none', 'important');
+            document.getElementById('multi-spot-proceed-bar').style.display = 'none';
+
+            navigate('famous-places-page');
+        }
+
+        function toggleTransportMode(mode) {
+            if(mode === 'train') {
+                document.getElementById('domestic-train-selector').style.display = 'block';
+                document.getElementById('flight-selector').style.display = 'none';
+            } else {
+                document.getElementById('domestic-train-selector').style.display = 'none';
+                document.getElementById('flight-selector').style.display = 'block';
+            }
+            document.getElementById('transport-details-container').style.display = 'none';
+        }
+
+        function updateTransportDetails(val, mode) {
+            if(!val) return;
+            document.getElementById('transport-details-container').style.display = 'block';
+            document.getElementById('live-train-btn').style.display = mode === 'train' ? 'block' : 'none';
+            document.getElementById('live-flight-btn').style.display = mode === 'flight' ? 'block' : 'none';
+            
+            let hr = Math.floor(Math.random() * 8) + 6;
+            let nxt = hr + Math.floor(Math.random() * 4) + 2;
+            document.getElementById('transport-times').innerHTML = `<span>0${hr}:30 AM</span> <i class="fas fa-long-arrow-alt-right text-muted"></i> <span>${nxt < 10 ? '0'+nxt : nxt}:15 PM</span>`;
+        }
+
+                function toggleSpot(idx, destName) {
+            const spotData = window.apiSubDestDB[destName][idx];
+            const existingIndex = window.selectedSpots.findIndex(s => s.idx === idx);
+            
+            const card = document.getElementById(`spot-card-${idx}`);
+            const btn = document.getElementById(`spot-btn-${idx}`);
+
+            if(existingIndex > -1) {
+                // Deselect
+                window.selectedSpots.splice(existingIndex, 1);
+                card.classList.remove('border-success', 'border-2');
+                btn.className = 'btn btn-sm btn-outline-primary';
+                btn.innerHTML = `Select Spot <i class="fas fa-plus ms-1"></i>`;
+            } else {
+                // Select
+                window.selectedSpots.push({ ...spotData, idx });
+                card.classList.add('border-success', 'border-2');
+                btn.className = 'btn btn-sm btn-success text-white';
+                btn.innerHTML = `<i class="fas fa-check"></i> Selected`;
+            }
+
+            const count = window.selectedSpots.length;
+            const proceedBar = document.getElementById('multi-spot-proceed-bar');
+            const durationSelector = document.getElementById('duration-date-selector');
+            
+            if(count > 0) {
+                proceedBar.style.display = 'block';
+                durationSelector.style.setProperty('display', 'flex', 'important');
+                document.getElementById('selected-spot-count').innerText = count;
+            } else {
+                proceedBar.style.display = 'none';
+                durationSelector.style.setProperty('display', 'none', 'important');
+            }
+        }
+
+        function confirmAndProceedMultiSpot() {
+            if(window.selectedSpots.length === 0) return;
+            
+            const dest = window.selectedDest;
+            
+            // Validate Date before proceeding
+            const travelDate = document.getElementById('global-travel-date').value;
+            if(!travelDate) {
+                alert("Please select a travel date before proceeding.");
+                return;
+            }
+
+            // Build a combined title for the package details page
+            const titles = window.selectedSpots.map(s => s.title).join(" & ");
+            document.getElementById('selected-dest-name').innerText = dest + " - " + titles;
+            
+            // Simulate Weather API for the Package Details Page
+            const weathers = [
+                { temp: "28°C", desc: "Sunny and Clear", icon: "fas fa-sun text-warning" },
+                { temp: "22°C", desc: "Partly Cloudy", icon: "fas fa-cloud-sun text-secondary" },
+                { temp: "18°C", desc: "Light Rain", icon: "fas fa-cloud-rain text-info" },
+                { temp: "25°C", desc: "Clear Skies", icon: "fas fa-sun text-warning" }
+            ];
+            const w = weathers[Math.floor(Math.random() * weathers.length)];
+            
+            document.getElementById('weather-temp').innerHTML = '<span class="spinner-border spinner-border-sm text-primary" role="status"></span>';
+            document.getElementById('weather-desc').innerText = "Fetching API...";
+            document.getElementById('weather-icon').className = "fas fa-spinner fa-spin fa-2x text-muted";
+
+            setTimeout(() => {
+                document.getElementById('weather-temp').innerText = w.temp;
+                document.getElementById('weather-desc').innerText = w.desc;
+                document.getElementById('weather-icon').className = w.icon + " fa-2x";
+            }, 800);
+
+            // Reset transport details UI
+            document.getElementById('transport-details-container').style.display = 'none';
+            if (currentTripType === 'national') {
+                document.getElementById('transport-mode-toggle').style.display = 'block';
+                document.getElementById('flight-selector').style.display = 'block';
+                document.getElementById('btnradio-flight').checked = true;
+                document.getElementById('domestic-train-selector').style.display = 'none';
+                
+                const fSel = document.querySelector('#flight-selector select');
+                if(fSel) {
+                    fSel.innerHTML = `
+                        <option value="" disabled selected>Choose departure airport...</option>
+                        <option value="DEL">New Delhi (DEL)</option>
+                        <option value="BOM">Mumbai (BOM)</option>
+                        <option value="BLR">Bangalore (BLR)</option>
+                        <option value="MAA">Chennai (MAA)</option>
+                    `;
+                    fSel.selectedIndex = 0;
+                }
+            } else {
+                document.getElementById('transport-mode-toggle').style.display = 'none';
+                document.getElementById('flight-selector').style.display = 'block';
+                document.getElementById('domestic-train-selector').style.display = 'none';
+                
+                const fSel = document.querySelector('#flight-selector select');
+                if(fSel) {
+                    fSel.innerHTML = `
+                        <option value="" disabled selected>Choose departure route...</option>
+                        <option value="New Delhi to Dubai & Dubai to ${dest}">New Delhi -> Dubai -> ${dest}</option>
+                        <option value="Mumbai to London & London to ${dest}">Mumbai -> London -> ${dest}</option>
+                    `;
+                    fSel.selectedIndex = 0;
+                }
+            }
+            const tSel = document.querySelector('#domestic-train-selector select');
+            if(tSel) tSel.selectedIndex = 0;
+
+            navigate('package-details-page');
+        }
+
+        function fetchLiveTrains() {
+            document.getElementById('train-loading').style.display = 'block';
+            document.getElementById('train-results').innerHTML = '';
+            
+            setTimeout(() => {
+                document.getElementById('train-loading').style.display = 'none';
+                let html = '';
+                for (let i = 1; i <= 3; i++) {
+                    html += `
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0 mb-3" style="border-left: 5px solid #2ecc71 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-train"></i> Express ${i}001 <span class="badge bg-secondary ms-2">TRN${i}</span></h5>
+                                    <button class="btn btn-sm btn-info text-white px-4 fw-bold" onclick="startBooking(false)">Book Train</button>
+                                </div>
+                                <div class="row align-items-center text-center mb-3">
+                                    <div class="col-4"><h4 class="mb-0">08:00 AM</h4></div>
+                                    <div class="col-4"><small class="text-muted">12h 30m</small><hr class="my-1 border-success" style="border-width: 2px;"><small class="text-success fw-bold">Direct</small></div>
+                                    <div class="col-4"><h4 class="mb-0">08:30 PM</h4></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                document.getElementById('train-results').innerHTML = html;
+            }, 1000);
+        }
+
+        function fetchLiveFlights() {
+            document.getElementById('flight-loading').style.display = 'block';
+            document.getElementById('flight-results').innerHTML = '';
+            
+            setTimeout(() => {
+                document.getElementById('flight-loading').style.display = 'none';
+                let html = '';
+                for (let i = 1; i <= 3; i++) {
+                    let isConn = i === 2;
+                    let color = isConn ? '#f39c12' : '#2ecc71';
+                    let typeTxt = isConn ? '1 Stop' : 'Direct';
+                    html += `
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0 mb-3" style="border-left: 5px solid ${color} !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-plane"></i> Airline ${i} <span class="badge bg-secondary ms-2">FL-${i}0${i}</span></h5>
+                                    <button class="btn btn-sm btn-info text-white px-4 fw-bold" onclick="startBooking(${isConn})">Book Flight</button>
+                                </div>
+                                <div class="row align-items-center text-center mb-3">
+                                    <div class="col-4"><h4 class="mb-0">10:00 AM</h4></div>
+                                    <div class="col-4"><small class="text-muted">2h 15m</small><hr class="my-1" style="border-color:${color}; border-width: 2px;"><small style="color:${color};" class="fw-bold">${typeTxt}</small></div>
+                                    <div class="col-4"><h4 class="mb-0">12:15 PM</h4></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                document.getElementById('flight-results').innerHTML = html;
+            }, 1000);
+        }
+        let isCurrentBookingConnecting = false;
+        let currentBookingStep = 1;
+        let selectedSeats1 = 0;
+        let selectedSeats2 = 0;
+        let requiredSeats = 1;
+
+        function startFlightSearch() {
+            const flightSelect = document.querySelector('#flight-selector select').value;
+            if (!flightSelect) {
+                showPopup("Please select an origin city first.");
+                return;
+            }
+            if (flightSelect) {
+                const fromSelect = document.getElementById('flight-from');
+                fromSelect.innerHTML = `<option value="${flightSelect}">${flightSelect}</option>`;
+            }
+            navigate('flight-booking-page');
+        }
+
+        function startTrainSearch() {
+            const trainSelect = document.querySelector('#domestic-train-selector select').value;
+            if (!trainSelect) {
+                showPopup("Please select an origin city first.");
+                return;
+            }
+            if (trainSelect) {
+                const fromSelect = document.getElementById('train-from');
+                fromSelect.innerHTML = `<option value="${trainSelect}">${trainSelect}</option>`;
+            }
+            navigate('train-booking-page');
+        }
+
+        function startBooking(isConn) {
+            isCurrentBookingConnecting = isConn;
+            currentBookingStep = 1;
+            
+            // Reset visibility
+            document.getElementById('booking-step-1').style.display = 'block';
+            document.getElementById('booking-map-1-container').style.display = 'block';
+            document.getElementById('booking-map-2-container').style.display = 'none';
+            document.getElementById('btn-back-booking').innerText = "Back to Results";
+
+            if(isConn) {
+                document.getElementById('btn-proceed-booking').innerHTML = `Proceed to Flight 2 Seats <i class="fas fa-arrow-right ms-2"></i>`;
+                const origin = document.getElementById('flight-from').value; // e.g. Delhi to Dubai & Dubai to Paris
+                if (origin.includes('&')) {
+                    let parts = origin.split('&');
+                    document.getElementById('seat-map-1-title').innerText = parts[0].trim();
+                    document.getElementById('seat-map-2-title').innerText = parts[1].trim();
+                }
+            } else {
+                document.getElementById('btn-proceed-booking').innerHTML = `Proceed to Hotel Booking <i class="fas fa-bed ms-2"></i>`;
+                document.getElementById('seat-map-1-title').innerText = "Flight Seats";
+            }
+            navigate('booking-page');
+            setTimeout(() => updateSeatReq(), 100);
+        }
+
+        function generateSeatMap(containerId, isMap2) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            
+            let seatClassObj = document.querySelector('input[name="seatClass"]:checked');
+            let seatClass = seatClassObj ? seatClassObj.value : 'Economy';
+            let rows = seatClass === 'Business' ? 4 : 10;
+            let cols = seatClass === 'Business' ? 4 : 6;
+            let seatLetter = ['A', 'B', 'C', 'D', 'E', 'F'];
+            
+            for(let r=1; r<=rows; r++) {
+                let rowDiv = document.createElement('div');
+                rowDiv.className = 'd-flex justify-content-center mb-2';
+                
+                for(let c=0; c<cols; c++) {
+                    const isBooked = Math.random() > 0.7; // Randomly book some seats
+                    let isAisle = (seatClass === 'Business' && c === 1) || (seatClass === 'Economy' && c === 2);
+                    
+                    const seat = document.createElement('div');
+                    seat.className = `flight-seat ${seatClass.toLowerCase()}-seat ${isBooked ? 'booked' : 'available'} ${isAisle ? 'seat-aisle-right' : ''}`;
+                    seat.innerText = r + seatLetter[c];
+                    
+                    if(!isBooked) {
+                        seat.onclick = function() {
+                            let currentSelected = isMap2 ? selectedSeats2 : selectedSeats1;
+                            if(this.classList.contains('selected')) {
+                                this.classList.remove('selected');
+                                if(isMap2) selectedSeats2--; else selectedSeats1--;
+                            } else {
+                                if(currentSelected < requiredSeats) {
+                                    this.classList.add('selected');
+                                    if(isMap2) selectedSeats2++; else selectedSeats1++;
+                                } else {
+                                    showPopup(`You can only select ${requiredSeats} seat(s) per flight map.`);
+                                }
+                            }
+                        };
+                    }
+                    rowDiv.appendChild(seat);
+                }
+                container.appendChild(rowDiv);
+            }
+        }
+
+        function initSeats() {
+            selectedSeats1 = 0;
+            selectedSeats2 = 0;
+            generateSeatMap('seatMap1', false);
+            if(isCurrentBookingConnecting) {
+                generateSeatMap('seatMap2', true);
+            }
+        }
+
+        function updateSeatReq() {
+            let pax = document.getElementById('paxCount').value;
+            requiredSeats = parseInt(pax) || 1;
+            
+            const msg = document.getElementById('seat-req-msg');
+            if(msg) msg.innerText = `(Select ${requiredSeats} seat${requiredSeats>1?'s':''})`;
+            
+            initSeats(); // reset selection
+            
+            // Generate passenger fields
+            const container = document.getElementById('passenger-fields-container');
+            if(container) {
+                container.innerHTML = '';
+                for(let i=1; i<=requiredSeats; i++) {
+                    container.innerHTML += `
+                        <div class="card bg-light border-0 mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="mb-3 text-primary"><i class="fas fa-user-circle me-2"></i>Passenger ${i}</h6>
+                                <div class="row g-2">
+                                    <div class="col-md-5"><input type="text" class="form-control" placeholder="Full Name (As per ID)" required></div>
+                                    <div class="col-md-3"><input type="number" class="form-control" placeholder="Age" min="1" max="120" required></div>
+                                    <div class="col-md-4">
+                                        <select class="form-select" required>
+                                            <option value="">Gender</option>
+                                            <option>Male</option>
+                                            <option>Female</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Initialize seats and passenger fields on load
+        updateSeatReq();
+
+        // Payment Processing
+        let currentPaymentType = 'card';
+        function selectPayment(element, type) {
+            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            currentPaymentType = type;
+            
+            const area = document.getElementById('payment-form-area');
+            if(type === 'card') {
+                area.innerHTML = `
+                    <div class="mb-3"><input type="text" id="payment-input" class="form-control" placeholder="Card Number (16 digits)" required></div>
+                    <div class="row g-2 mb-4">
+                        <div class="col-6"><input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" required></div>
+                        <div class="col-6"><input type="text" id="card-cvv" class="form-control" placeholder="CVV" required></div>
+                    </div>`;
+            } else if (type === 'upi') {
+                area.innerHTML = `<div class="mb-4"><input type="text" id="payment-input" class="form-control" placeholder="Enter UPI ID (e.g. user@okbank)" required></div>`;
+            } else {
+                area.innerHTML = `
+                    <div class="mb-4">
+                        <select id="payment-input" class="form-select">
+                            <option value="">Select Bank...</option>
+                            <option value="sbi">State Bank</option>
+                            <option value="hdfc">HDFC Bank</option>
+                            <option value="icici">ICICI Bank</option>
+                        </select>
+                    </div>
+                    <div class="mb-4"><input type="text" id="bank-acc" class="form-control" placeholder="Enter Account Number" required></div>`;
+            }
+        }
+
+        async function processPayment() {
+            const paymentInput = document.getElementById('payment-input');
+            
+            // Validation
+            if (currentPaymentType !== 'netbanking' && !paymentInput.value) {
+                showPopup('Payment Failed: Please enter your ' + (currentPaymentType === 'card' ? 'Card Number' : currentPaymentType === 'upi' ? 'UPI ID' : 'Bank details') + ' to proceed.', 'Payment Error');
+                return;
+            }
+
+            if (currentPaymentType === 'netbanking' && !document.getElementById('bank-acc').value) {
+                showPopup('Payment Failed: Please enter your Account Number to proceed.', 'Payment Error');
+                return;
+            }
+
+            const btn = document.getElementById('pay-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Payment API...';
+            btn.disabled = true;
+
+            // Simulate API Connection
+            await new Promise(r => setTimeout(r, 1200));
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying details with Bank...';
+            
+            await new Promise(r => setTimeout(r, 1200));
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            
+                        const userName = 'Guest User';
+            const userEmail = 'guest@example.com';
+            let bks = JSON.parse(localStorage.getItem('apiBookings')) || [];
+            bks.push({ name: userName, email: userEmail, details: document.getElementById('booking-mode-title') ? document.getElementById('booking-mode-title').innerText : 'Package Booking', status: 'Pending' });
+            try { localStorage.setItem('apiBookings', JSON.stringify(bks)); } catch(e) { console.warn("Storage disabled"); }
+            navigate('success-page');
+        }
+
+    </script>
+        <!-- 9. ADMIN LOGIN MODAL -->
+        <div id="admin-login-modal" class="modal-overlay" style="display:none; z-index:9999;">
+            <div class="modal-content-custom" style="max-width:400px; text-align:left;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0 text-primary"><i class="fas fa-lock"></i> Admin Portal</h4>
+                    <i class="fas fa-times" style="cursor:pointer;" onclick="document.getElementById('admin-login-modal').style.display='none'"></i>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Username</label>
+                    <input type="text" id="admin-user" class="form-control" placeholder="Enter Username">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Password</label>
+                    <input type="password" id="admin-pass" class="form-control" placeholder="Enter Password">
+                </div>
+                <button class="btn btn-primary w-100 fw-bold" onclick="doAdminLogin()">Login</button>
+            </div>
+        </div>
+
+        <!-- 10. ADMIN DASHBOARD PAGE -->
+        <div id="admin-dashboard-page" class="page-section" style="display:none; background:#f4f6f9; min-height:100vh; position:absolute; top:0; left:0; width:100%; z-index:10000; padding-bottom:100px;">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+                <div class="container-fluid px-4">
+                    <a class="navbar-brand text-warning fw-bold" href="javascript:void(0)"><i class="fas fa-cogs"></i> Tripzo Admin</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="adminNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item"><a class="nav-link admin-nav-link active" href="javascript:void(0)" onclick="showAdminTab('overview')">Overview</a></li>
+                            <li class="nav-item"><a class="nav-link admin-nav-link" href="javascript:void(0)" onclick="showAdminTab('destinations')">Destinations</a></li>
+                            <li class="nav-item"><a class="nav-link admin-nav-link" href="javascript:void(0)" onclick="showAdminTab('packages')">Packages</a></li>
+                            <li class="nav-item"><a class="nav-link admin-nav-link" href="javascript:void(0)" onclick="showAdminTab('bookings')">Bookings</a></li>
+                            <li class="nav-item"><a class="nav-link admin-nav-link" href="javascript:void(0)" onclick="showAdminTab('enquiries')">Enquiries</a></li>
+                            <li class="nav-item"><a class="nav-link admin-nav-link" href="javascript:void(0)" onclick="showAdminTab('cms')">CMS</a></li>
+                            <li class="nav-item ms-3"><button class="btn btn-sm btn-outline-danger mt-1" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container mt-4 pb-5">
+                <div id="admin-tab-overview" class="admin-tab-content">
+                    <div class="d-flex align-items-center mb-4">
+                        <button class="btn btn-outline-secondary me-3" onclick="logoutAdmin()"><i class="fas fa-arrow-left"></i> Back to Site</button>
+                        <h2 class="mb-0">Dashboard Overview</h2>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white shadow border-0 text-center py-4" onclick="showAdminTab('bookings')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <h3><i class="fas fa-users"></i></h3>
+                                <h2 class="fw-bold" id="stat-bookings">0</h2>
+                                <span>Total Bookings</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white shadow border-0 text-center py-4" onclick="showAdminTab('destinations')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <h3><i class="fas fa-map-marker-alt"></i></h3>
+                                <h2 class="fw-bold" id="stat-dests">0</h2>
+                                <span>Destinations</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white shadow border-0 text-center py-4" onclick="showAdminTab('packages')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <h3><i class="fas fa-suitcase"></i></h3>
+                                <h2 class="fw-bold" id="stat-packages">0</h2>
+                                <span>Active Packages</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-dark shadow border-0 text-center py-4" onclick="showAdminTab('enquiries')" style="cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <h3><i class="fas fa-envelope"></i></h3>
+                                <h2 class="fw-bold" id="stat-enquiries">0</h2>
+                                <span>New Enquiries</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="admin-tab-destinations" class="admin-tab-content" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-outline-secondary me-3" onclick="showAdminTab('overview')"><i class="fas fa-arrow-left"></i> Back</button>
+                            <h2 class="mb-0">Manage Destinations</h2>
+                        </div>
+                        <button class="btn btn-success" onclick="document.getElementById('add-dest-form').style.display='block'"><i class="fas fa-plus"></i> Add Destination</button>
+                    </div>
+                    
+                    <div class="card shadow-sm border-0 mb-4 p-4" id="add-dest-form" style="display:none; background:#e9ecef;">
+                        <h5>Add New Destination</h5>
+                        <div class="row g-3">
+                            <div class="col-md-3"><input type="text" id="add-dest-name" class="form-control" placeholder="Destination Name (e.g. Rome)"></div>
+                            <div class="col-md-3">
+                                <select id="add-dest-type" class="form-select">
+                                    <option value="national">National (India)</option>
+                                    <option value="international">International</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3"><input type="text" id="add-dest-img" class="form-control" placeholder="Image URL"></div>
+                            <div class="col-md-3"><input type="text" id="add-dest-desc" class="form-control" placeholder="Short Description"></div>
+                            <div class="col-12 text-end">
+                                <button class="btn btn-secondary me-2" onclick="document.getElementById('add-dest-form').style.display='none'">Cancel</button>
+                                <button class="btn btn-primary" onclick="adminAddDestination()">Save Destination</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow border-0">
+                        <table class="table table-hover mb-0 bg-white">
+                            <thead class="table-dark">
+                                <tr><th>Name</th><th>Type</th><th>Description</th><th>Action</th></tr>
+                            </thead>
+                            <tbody id="admin-dest-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="admin-tab-packages" class="admin-tab-content" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-outline-secondary me-3" onclick="showAdminTab('overview')"><i class="fas fa-arrow-left"></i> Back</button>
+                            <h2 class="mb-0">Manage Packages</h2>
+                        </div>
+                        <button class="btn btn-success" onclick="document.getElementById('add-pkg-form').style.display='block'"><i class="fas fa-plus"></i> Add Package</button>
+                    </div>
+
+                    <div class="card shadow-sm border-0 mb-4 p-4" id="add-pkg-form" style="display:none; background:#e9ecef;">
+                        <h5>Add New Package</h5>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <select id="add-pkg-dest" class="form-select"></select>
+                            </div>
+                            <div class="col-md-3"><input type="text" id="add-pkg-title" class="form-control" placeholder="Spot/Package Title"></div>
+                            <div class="col-md-3"><input type="text" id="add-pkg-duration" class="form-control" placeholder="Duration (e.g. 3 Days)"></div>
+                            <div class="col-md-3"><input type="text" id="add-pkg-img" class="form-control" placeholder="Image URL"></div>
+                            <div class="col-12 text-end">
+                                <button class="btn btn-secondary me-2" onclick="document.getElementById('add-pkg-form').style.display='none'">Cancel</button>
+                                <button class="btn btn-primary" onclick="adminAddPackage()">Save Package</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow border-0">
+                        <table class="table table-hover mb-0 bg-white">
+                            <thead class="table-dark">
+                                <tr><th>Destination</th><th>Package Title</th><th>Duration</th><th>Action</th></tr>
+                            </thead>
+                            <tbody id="admin-pkg-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="admin-tab-bookings" class="admin-tab-content" style="display:none;">
+                    <div class="d-flex align-items-center mb-4">
+                        <button class="btn btn-outline-secondary me-3" onclick="showAdminTab('overview')"><i class="fas fa-arrow-left"></i> Back</button>
+                        <h2 class="mb-0">User Bookings</h2>
+                    </div>
+                    <div class="card shadow border-0">
+                        <table class="table table-hover mb-0 bg-white">
+                            <thead class="table-dark">
+                                <tr><th>ID</th><th>User</th><th>Details</th><th>Status</th><th>Action</th></tr>
+                            </thead>
+                            <tbody id="admin-bookings-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="admin-tab-enquiries" class="admin-tab-content" style="display:none;">
+                    <div class="d-flex align-items-center mb-4">
+                        <button class="btn btn-outline-secondary me-3" onclick="showAdminTab('overview')"><i class="fas fa-arrow-left"></i> Back</button>
+                        <h2 class="mb-0">Enquiries & Complaints</h2>
+                    </div>
+                    <div class="card shadow border-0">
+                        <table class="table table-hover mb-0 bg-white">
+                            <thead class="table-dark">
+                                <tr><th>Name</th><th>Email</th><th>Message</th><th>Status</th><th>Action</th></tr>
+                            </thead>
+                            <tbody id="admin-enq-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="admin-tab-cms" class="admin-tab-content" style="display:none;">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-outline-secondary me-3" onclick="showAdminTab('overview')"><i class="fas fa-arrow-left"></i> Back</button>
+                            <h2 class="mb-0">Website Content Management</h2>
+                        </div>
+                        <button class="btn btn-danger" onclick="adminResetDatabase()"><i class="fas fa-trash-restore"></i> Reset Factory Defaults</button>
+                    </div>
+                    <div class="card shadow border-0 p-4 bg-white">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Hero Title (Homepage)</label>
+                            <input type="text" id="cms-hero-title" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Hero Subtitle</label>
+                            <input type="text" id="cms-hero-subtitle" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">About Us Text</label>
+                            <textarea id="cms-about" class="form-control" rows="4"></textarea>
+                        </div>
+                        <button class="btn btn-primary fw-bold px-5" onclick="adminSaveCMS()">Publish Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script>
+        // ==========================================
+        // ADMIN DASHBOARD & API SERVICE LAYER
+        // ==========================================
+
+        function openAdminLogin() {
+            document.getElementById('admin-login-modal').style.display = 'flex';
+        }
+        function doAdminLogin() {
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+            if(u === 'admin' && p === 'admin') {
+                document.getElementById('admin-login-modal').style.display = 'none';
+                document.getElementById('admin-dashboard-page').style.display = 'block';
+                refreshAdminData();
+            } else {
+                alert("Invalid Credentials! Try admin / admin");
+            }
+        }
+        function logoutAdmin() {
+            location.reload();
+        }
+
+        function showAdminTab(tabId) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.admin-nav-link').forEach(el => el.classList.remove('active'));
+            document.getElementById('admin-tab-' + tabId).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        function refreshAdminData() {
+            document.getElementById('stat-bookings').innerText = apiBookings.length;
+            document.getElementById('stat-enquiries').innerText = apiEnquiries.length;
+            document.getElementById('stat-dests').innerText = apiDestinations.national.length + apiDestinations.international.length;
+            let pkgCount = 0;
+            for(let key in apiSubDestDB) { pkgCount += apiSubDestDB[key].length; }
+            document.getElementById('stat-packages').innerText = pkgCount;
+
+            const destBody = document.getElementById('admin-dest-tbody');
+            destBody.innerHTML = '';
+            ['national', 'international'].forEach(type => {
+                apiDestinations[type].forEach((d, i) => {
+                    destBody.innerHTML += `<tr>
+                        <td><strong>${d.name}</strong></td>
+                        <td><span class="badge bg-secondary">${type}</span></td>
+                        <td>${d.desc}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="adminDelDest('${type}', ${i})"><i class="fas fa-trash"></i></button></td>
+                    </tr>`;
+                });
+            });
+
+            const pkgBody = document.getElementById('admin-pkg-tbody');
+            const pkgSelect = document.getElementById('add-pkg-dest');
+            pkgBody.innerHTML = '';
+            pkgSelect.innerHTML = '<option value="">Select Destination...</option>';
+            
+            ['national', 'international'].forEach(type => {
+                apiDestinations[type].forEach(d => {
+                    pkgSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+                    if(apiSubDestDB[d.name]) {
+                        apiSubDestDB[d.name].forEach((pkg, i) => {
+                            pkgBody.innerHTML += `<tr>
+                                <td><span class="badge bg-info text-dark">${d.name}</span></td>
+                                <td>${pkg.title}</td>
+                                <td>${pkg.pkg}</td>
+                                <td><button class="btn btn-sm btn-danger" onclick="adminDelPkg('${d.name}', ${i})"><i class="fas fa-trash"></i></button></td>
+                            </tr>`;
+                        });
+                    }
+                });
+            });
+
+            const bkBody = document.getElementById('admin-bookings-tbody');
+            bkBody.innerHTML = '';
+            apiBookings.forEach((b, i) => {
+                let statusBadge = b.status === 'Confirmed' ? 'success' : (b.status === 'Cancelled' ? 'danger' : 'warning');
+                bkBody.innerHTML += `<tr>
+                    <td>#BK-${1000+i}</td>
+                    <td>${b.name}<br><small>${b.email}</small></td>
+                    <td>${b.details}</td>
+                    <td><span class="badge bg-${statusBadge}">${b.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="adminUpdateBooking(${i}, 'Confirmed')"><i class="fas fa-check"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="adminUpdateBooking(${i}, 'Cancelled')"><i class="fas fa-times"></i></button>
+                    </td>
+                </tr>`;
+            });
+
+            const enqBody = document.getElementById('admin-enq-tbody');
+            enqBody.innerHTML = '';
+            apiEnquiries.forEach((e, i) => {
+                let statusBadge = e.status === 'Resolved' ? 'success' : 'warning';
+                enqBody.innerHTML += `<tr>
+                    <td>${e.name}</td>
+                    <td>${e.email}</td>
+                    <td>${e.message}</td>
+                    <td><span class="badge bg-${statusBadge}">${e.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="adminResolveEnq(${i})">Resolve</button>
+                    </td>
+                </tr>`;
+            });
+
+            document.getElementById('cms-hero-title').value = apiCMS.heroTitle;
+            document.getElementById('cms-hero-subtitle').value = apiCMS.heroSubtitle;
+            document.getElementById('cms-about').value = apiCMS.aboutText;
+        }
+
+        function adminAddDestination() {
+            const name = document.getElementById('add-dest-name').value;
+            const type = document.getElementById('add-dest-type').value;
+            const img = document.getElementById('add-dest-img').value || 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&q=80';
+            const desc = document.getElementById('add-dest-desc').value;
+            if(!name) return alert("Name required!");
+            
+            apiDestinations[type].push({ name: name, img: img, desc: desc });
+            try { localStorage.setItem('apiDestinations', JSON.stringify(apiDestinations)); } catch(e) { console.warn("Storage disabled"); }
+            document.getElementById('add-dest-form').style.display = 'none';
+            refreshAdminData();
+            alert("Added!");
+        }
+        function adminDelDest(type, idx) {
+            if(confirm("Delete destination?")) {
+                apiDestinations[type].splice(idx, 1);
+                try { localStorage.setItem('apiDestinations', JSON.stringify(apiDestinations)); } catch(e) { console.warn("Storage disabled"); }
+                refreshAdminData();
+            }
+        }
+        
+        function adminAddPackage() {
+            const dest = document.getElementById('add-pkg-dest').value;
+            const title = document.getElementById('add-pkg-title').value;
+            const duration = document.getElementById('add-pkg-duration').value;
+            const img = document.getElementById('add-pkg-img').value || 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&q=80';
+            if(!dest || !title) return alert("Destination and Title required!");
+
+            if(!apiSubDestDB[dest]) apiSubDestDB[dest] = [];
+            apiSubDestDB[dest].push({ title: title, img: img, pkg: duration });
+            try { localStorage.setItem('apiSubDestDB', JSON.stringify(apiSubDestDB)); } catch(e) { console.warn("Storage disabled"); }
+            document.getElementById('add-pkg-form').style.display = 'none';
+            refreshAdminData();
+            alert("Added!");
+        }
+        function adminDelPkg(dest, idx) {
+            if(confirm("Delete package?")) {
+                apiSubDestDB[dest].splice(idx, 1);
+                try { localStorage.setItem('apiSubDestDB', JSON.stringify(apiSubDestDB)); } catch(e) { console.warn("Storage disabled"); }
+                refreshAdminData();
+            }
+        }
+
+        function adminUpdateBooking(idx, status) {
+            apiBookings[idx].status = status;
+            try { localStorage.setItem('apiBookings', JSON.stringify(apiBookings)); } catch(e) { console.warn("Storage disabled"); }
+            refreshAdminData();
+        }
+        function adminResolveEnq(idx) {
+            apiEnquiries[idx].status = 'Resolved';
+            try { localStorage.setItem('apiEnquiries', JSON.stringify(apiEnquiries)); } catch(e) { console.warn("Storage disabled"); }
+            refreshAdminData();
+        }
+
+        function adminSaveCMS() {
+            apiCMS.heroTitle = document.getElementById('cms-hero-title').value;
+            apiCMS.heroSubtitle = document.getElementById('cms-hero-subtitle').value;
+            apiCMS.aboutText = document.getElementById('cms-about').value;
+            try { localStorage.setItem('apiCMS', JSON.stringify(apiCMS)); } catch(e) { console.warn("Storage disabled"); }
+            alert("CMS Updated! Changes will appear on the public site.");
+            applyCMS();
+        }
+        
+        function adminResetDatabase() {
+            if(confirm("WARNING! This will delete ALL custom destinations, packages, bookings, and CMS edits. Factory defaults will be restored. Are you sure?")) {
+                try { localStorage.clear(); } catch(e) { console.warn("Storage disabled"); }
+                alert("Database Reset. Reloading...");
+                location.reload();
+            }
+        }
+
+        function applyCMS() {
+            const h1 = document.querySelector('.hero-section h1');
+            if(h1) h1.innerText = apiCMS.heroTitle;
+            const h1p = document.querySelector('.hero-section p');
+            if(h1p) h1p.innerText = apiCMS.heroSubtitle;
+            
+            const aboutLead = document.querySelector('#about-page .lead');
+            if(aboutLead) aboutLead.innerText = apiCMS.aboutText;
+        }
+
+        window.addEventListener('DOMContentLoaded', applyCMS);
+                                        async function fetchPackageFlights() {
+            const results = document.getElementById('pkg-flight-results');
+            const loading = document.getElementById('pkg-flight-loading');
+            const from = document.getElementById('pkg-flight-from').value;
+            const to = document.getElementById('pkg-flight-to').value;
+            const date = document.getElementById('pkg-flight-date').value;
+            
+            if(!date) { alert('Please select a departure date'); return; }
+            
+            results.innerHTML = '';
+            loading.style.display = 'block';
+
+            try {
+                // Call our new Node.js backend to get real Duffel data
+                const response = await fetch('http://localhost:3000/api/searchFlights', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ from, to, date })
+                });
+
+                const data = await response.json();
+                loading.style.display = 'none';
+
+                if (!data.success || !data.offers || data.offers.length === 0) {
+                    results.innerHTML = `<div class="alert alert-danger mx-auto col-md-8"><i class="fas fa-exclamation-circle me-2"></i>No flights found for this route on the selected date. Try a different date or departure city.</div>`;
+                    return;
+                }
+
+                // Filter offers into direct and connecting
+                const directOffers = data.offers.filter(o => o.isDirect);
+                const connOffers = data.offers.filter(o => !o.isDirect);
+
+                let html = '';
+
+                if (directOffers.length > 0) {
+                    html += `<div class="col-md-8 mx-auto mb-4"><h5 class="fw-bold mb-3 text-dark">${directOffers.length} Real Direct Flights Found</h5>`;
+                    
+                    // Display up to 3 direct options
+                    directOffers.slice(0, 3).forEach((offer, i) => {
+                        const border = i===0 ? 'success' : (i===1 ? 'primary' : 'info');
+                        const seg = offer.segments[0];
+
+                        html += `
+                            <div class="card shadow-sm border-${border} mb-3">
+                                <div class="card-header bg-${border} text-white fw-bold"><i class="fas fa-plane me-2"></i>Option ${i+1} ${i===0 ? '(Cheapest)' : ''}</div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="fw-bold text-dark">${offer.mainAirline} (${seg.airlineCode}-${seg.flightNumber})</h5>
+                                        <h4 class="text-${border} fw-bold">${offer.price}</h4>
+                                    </div>
+                                    <p class="text-muted mb-1">Direct Flight • ${offer.totalDuration}</p>
+                                    <div class="d-flex justify-content-between fw-bold mb-3 text-dark">
+                                        <span>${seg.departure} (${seg.depTime})</span>
+                                        <i class="fas fa-long-arrow-alt-right text-muted"></i>
+                                        <span>${seg.arrival} (${seg.arrTime})</span>
+                                    </div>
+                                    <button class="btn btn-${border} w-100 fw-bold" onclick="bookPkgFlight(false, '${offer.id}')">Select Option ${i+1} & Pick Seats</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } 
+                
+                if (connOffers.length > 0 && directOffers.length === 0) {
+                    html += `
+                        <div class="col-md-8 mx-auto mb-4">
+                            <div class="alert alert-warning fw-bold mb-3"><i class="fas fa-info-circle me-2"></i>No direct flight available. Showing best connecting flight options.</div>
+                            <h5 class="fw-bold mb-3 text-dark">${connOffers.length} Connecting Flights Found</h5>
+                    `;
+                    
+                    connOffers.slice(0, 3).forEach((offer, i) => {
+                        const border = i===0 ? 'warning' : (i===1 ? 'info' : 'secondary');
+                        const seg1 = offer.segments[0];
+                        const seg2 = offer.segments[1];
+                        
+                        html += `
+                            <div class="card shadow-sm border-${border} mb-4">
+                                <div class="card-header bg-${border} ${i===0?'text-dark':'text-white'} fw-bold"><i class="fas fa-route me-2"></i>Option ${i+1}: ${offer.mainAirline} (via ${seg1.arrival})</div>
+                                <div class="card-body">
+                                    <h5 class="fw-bold text-dark d-flex justify-content-between">
+                                        <span>${seg1.airlineName} (${seg1.airlineCode}-${seg1.flightNumber}) &nbsp;<i class="fas fa-plane text-muted"></i>&nbsp; ${seg2.airlineName} (${seg2.airlineCode}-${seg2.flightNumber})</span>
+                                        <span class="text-${border}">${offer.price}</span>
+                                    </h5>
+                                    
+                                    <div class="border rounded p-3 mb-3 bg-light">
+                                        <h6 class="fw-bold text-primary mb-2">Flight 1</h6>
+                                        <div class="d-flex justify-content-between fw-bold text-dark">
+                                            <span>${seg1.departure} (${seg1.depTime})</span>
+                                            <i class="fas fa-arrow-right text-muted"></i>
+                                            <span>${seg1.arrival} (${seg1.arrTime})</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="border rounded p-3 mb-3 bg-light">
+                                        <h6 class="fw-bold text-success mb-2">Flight 2</h6>
+                                        <div class="d-flex justify-content-between fw-bold text-dark">
+                                            <span>${seg2.departure} (${seg2.depTime})</span>
+                                            <i class="fas fa-arrow-right text-muted"></i>
+                                            <span>${seg2.arrival} (${seg2.arrTime})</span>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-${border} w-100 ${i===0?'text-dark':'text-white'} fw-bold" onclick="bookPkgFlight(true, '${offer.id}')">Select Option ${i+1} & Pick Seats</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                results.innerHTML = html;
+
+            } catch (error) {
+                loading.style.display = 'none';
+                console.error("Backend fetch error:", error);
+                results.innerHTML = `<div class="alert alert-danger mx-auto col-md-8"><i class="fas fa-exclamation-triangle me-2"></i>Failed to fetch flights. Ensure the Node.js backend is running on port 3000.</div>`;
+            }
+        }
+
+                function bookPkgFlight(isRoundTrip, offerId) {
+            isCurrentBookingConnecting = isRoundTrip;
+            window.selectedFlightOfferId = offerId;
+            document.getElementById('booking-title').innerText = "Passenger Details & Seat Selection";
+            navigate('booking-page');
+            setTimeout(() => startBooking(isRoundTrip), 100);
+        }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
